@@ -1,0 +1,5 @@
+name: ${project.name}
+version: ${project.version}
+author: Haileykins
+description: An Apocalypse Survival Plugin
+main: me.haileykins.ApocalypticSurvival.ApocalypticSurvival
