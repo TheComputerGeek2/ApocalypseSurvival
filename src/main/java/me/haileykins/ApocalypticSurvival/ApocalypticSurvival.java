@@ -1,30 +1,28 @@
 package me.haileykins.ApocalypticSurvival;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.entity.EntityType;
+import me.haileykins.ApocalypticSurvival.Handlers.PlayerDeathHandler;
+import me.haileykins.ApocalypticSurvival.Handlers.PlayerJoinHandler;
+import me.haileykins.ApocalypticSurvival.Handlers.WorldChangeHandler;
+import me.haileykins.ApocalypticSurvival.Handlers.ZombieDeathHandler;
+import me.haileykins.ApocalypticSurvival.ScoreHandlers.PlayerScore;
+import me.haileykins.ApocalypticSurvival.ScoreHandlers.PlayerScores;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.*;
+
+@SuppressWarnings("unused")
 
 public class ApocalypticSurvival extends JavaPlugin implements Listener {
 
     private PlayerScores scores;
 
-
     private boolean isGameWorld(World world) {
         return world.getName().equalsIgnoreCase("ApocalypseSurvival");
-    }
 
-    private boolean inGameWorld(Player p){
+    }
+    public boolean inGameWorld(Player p){
         return isGameWorld(p.getWorld());
     }
 
@@ -42,15 +40,20 @@ public class ApocalypticSurvival extends JavaPlugin implements Listener {
         scores.loadScores();
 
         // Register Commands
-        //TODO: Register Commands
+        // TODO: Register Commands
 
         // Register Listeners
-        getServer().getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(new ZombieDeathHandler(this, this.scores), this);
+        getServer().getPluginManager().registerEvents(new PlayerDeathHandler(this, this.scores), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinHandler(this), this);
+        getServer().getPluginManager().registerEvents(new WorldChangeHandler(this), this);
 
         // Generate World if World Does Not Exist
         if (!gameWorldExists()) {
             getLogger().info("WORLD NOT FOUND, CREATING!");
-            Bukkit.createWorld(new WorldCreator("ApocalypseSurvival"));
+            WorldCreator wc = new WorldCreator("ApocalypseSurvival");
+            World world = wc.createWorld();
+            world.setDifficulty(Difficulty.HARD);
         }
         else {
             getLogger().info("World Found!");
@@ -83,48 +86,4 @@ public class ApocalypticSurvival extends JavaPlugin implements Listener {
 
         player.setScoreboard(b);
     }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player p = event.getPlayer();
-        getLogger().info("Player " + p.getName() + " joined");
-        if (inGameWorld(p)) {
-            getLogger().info("Player " + p.getName() + " in game world");
-            setupScoreboard(p);
-        }
-    }
-
-    @EventHandler
-    public void onWorldChange(PlayerChangedWorldEvent event) {
-        Player p = event.getPlayer();
-        getLogger().info("Player " + p.getName() + " to " + p.getWorld().getName()
-        );
-
-        if (inGameWorld(p)) {
-            setupScoreboard(p);
-        } else {
-            p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-        }
-    }
-
-    @EventHandler
-    public void onZombieDeath(EntityDeathEvent event) {
-        if (event.getEntityType() == EntityType.ZOMBIE) {
-            Player p = event.getEntity().getKiller();
-            if (p != null && inGameWorld(p)) {
-                scores.addKill(p);
-                setupScoreboard(p);
-            }
-        }
-    }
-
-    @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event) {
-        Player p = event.getEntity();
-        if (inGameWorld(p)) {
-            scores.addDeath(p);
-            setupScoreboard(p);
-        }
-    }
-
 }
