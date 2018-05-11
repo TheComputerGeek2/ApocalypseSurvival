@@ -3,3 +3,7 @@ version: ${project.version}
 author: Haileykins
 description: An Apocalypse Survival Plugin
 main: me.haileykins.ApocalypticSurvival.ApocalypticSurvival
+
+commands:
+    asreset:
+        description: reset player stats

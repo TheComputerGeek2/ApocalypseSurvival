@@ -1,5 +1,6 @@
 package me.haileykins.ApocalypticSurvival;
 
+import me.haileykins.ApocalypticSurvival.Commands.CommandReset;
 import me.haileykins.ApocalypticSurvival.Handlers.PlayerDeathHandler;
 import me.haileykins.ApocalypticSurvival.Handlers.PlayerJoinHandler;
 import me.haileykins.ApocalypticSurvival.Handlers.WorldChangeHandler;
@@ -40,7 +41,7 @@ public class ApocalypticSurvival extends JavaPlugin implements Listener {
         scores.loadScores();
 
         // Register Commands
-        // TODO: Register Commands
+        getCommand("asreset").setExecutor(new CommandReset());
 
         // Register Listeners
         getServer().getPluginManager().registerEvents(new ZombieDeathHandler(this, this.scores), this);
