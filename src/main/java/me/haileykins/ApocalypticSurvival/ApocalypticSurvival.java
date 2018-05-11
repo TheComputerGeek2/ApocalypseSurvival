@@ -16,9 +16,7 @@ import org.bukkit.scoreboard.*;
 @SuppressWarnings("unused")
 
 public class ApocalypticSurvival extends JavaPlugin implements Listener {
-
-    private PlayerScores scores;
-
+	
     private boolean isGameWorld(World world) {
         return world.getName().equalsIgnoreCase("ApocalypseSurvival");
 
@@ -37,15 +35,15 @@ public class ApocalypticSurvival extends JavaPlugin implements Listener {
     }
 
     public void onEnable() {
-        scores = new PlayerScores(this);
-        scores.loadScores();
+        PlayerScores.initialize(this);
+        PlayerScores.loadScores();
 
         // Register Commands
         getCommand("asreset").setExecutor(new CommandReset());
 
         // Register Listeners
-        getServer().getPluginManager().registerEvents(new ZombieDeathHandler(this, this.scores), this);
-        getServer().getPluginManager().registerEvents(new PlayerDeathHandler(this, this.scores), this);
+        getServer().getPluginManager().registerEvents(new ZombieDeathHandler(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerDeathHandler(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinHandler(this), this);
         getServer().getPluginManager().registerEvents(new WorldChangeHandler(this), this);
 
@@ -70,7 +68,7 @@ public class ApocalypticSurvival extends JavaPlugin implements Listener {
 
     public void setupScoreboard(Player player) {
 
-        PlayerScore score = scores.getScore(player);
+        PlayerScore score = PlayerScores.getScore(player);
 
         ScoreboardManager m = Bukkit.getScoreboardManager();
         Scoreboard b = m.getNewScoreboard();

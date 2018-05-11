@@ -13,11 +13,9 @@ import org.bukkit.event.entity.EntityDeathEvent;
 public class ZombieDeathHandler implements Listener {
 
     private ApocalypticSurvival plugin;
-    private PlayerScores scores;
 
-    public ZombieDeathHandler(ApocalypticSurvival pl, PlayerScores ps) {
+    public ZombieDeathHandler(ApocalypticSurvival pl) {
         plugin = pl;
-        scores = ps;
     }
 
     @EventHandler
@@ -25,7 +23,7 @@ public class ZombieDeathHandler implements Listener {
         if (event.getEntityType() == EntityType.ZOMBIE) {
             Player p = event.getEntity().getKiller();
             if (p != null && plugin.inGameWorld(p)) { ;
-                scores.addKill(p);
+                PlayerScores.addKill(p);
                 plugin.setupScoreboard(p);
             }
         }

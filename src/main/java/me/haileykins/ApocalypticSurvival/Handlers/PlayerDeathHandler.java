@@ -12,18 +12,16 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 public class PlayerDeathHandler implements Listener {
 
     private ApocalypticSurvival plugin;
-    private PlayerScores scores;
 
-    public PlayerDeathHandler(ApocalypticSurvival pl, PlayerScores ps) {
+    public PlayerDeathHandler(ApocalypticSurvival pl) {
         plugin = pl;
-        scores = ps;
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player p = event.getEntity();
         if (plugin.inGameWorld(p)) {
-            scores.addDeath(p);
+            PlayerScores.addDeath(p);
             plugin.setupScoreboard(p);
         }
     }

@@ -10,9 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class CommandReset implements CommandExecutor {
-
-    private PlayerScores scores;
-
+    
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         List<Player> players = Bukkit.getServer().matchPlayer(args[0]);
@@ -20,7 +18,7 @@ public class CommandReset implements CommandExecutor {
             sender.sendMessage("Player not found.");
         } else {
             Player player = players.get(0);
-            scores.resetStats(player);
+            PlayerScores.resetStats(player);
         }
         return true;
     }
